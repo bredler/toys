@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+
+# finishWordle
+# 
+# I'm not dumb. Wordle is dumb.
+# 
+# Author: Brendan Redler 2022
+# v 1.0
+
+import enchant
+from itertools import permutations
+from itertools import product
+import sys
+import re
+
+d = enchant.Dict("en_US")
+
+try:
+
+    tool_name = sys.argv[0]
+    fname_regex = re.compile(".*\/(.+)$")
+    tool_name = fname_regex.match(tool_name).group(1)
+
+    letters = sys.argv[1].strip()
+    letters = [*letters]
+    
+    knowns = sys.argv[2].strip()
+    knowns = [*knowns]
+
+    mandatory_letters = sys.argv[3].strip()
+    mandatory_letters = [*mandatory_letters]
+
+    print(f"letters: {letters}")
+    print(f"knowns: {knowns}")
+    print(f"known without position: {mandatory_letters}")
+
+except:
+    print()
+    print(f"Usage: {tool_name} <possible_letters> <pattern> <mandatory_letters>")
+    print()
+    print(f"Copy/Paste the below example for a demonstration")
+    print(f"Ex: {tool_name} QWETYIPLKJHGFSZXCVN ----T PINT")
+    print()
+    exit(1)
+
+
+
+for i in knowns:
+    if (i not in letters) and (i in "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"):
+        letters.append(i)
+
+def get_unknown_positions(list_of_elems, element):
+    index_pos_list = []
+    for i in range(len(list_of_elems)):
+        if list_of_elems[i] == element:
+            index_pos_list.append(i)
+    return index_pos_list
+
+def try_permutation(combination, known_list):
+    for i in range(len(combination)):
+        known_list[known_list.index("-")] = combination[i]
+    return known_list
+
+unknowns = get_unknown_positions(knowns, "-")
+n_unknowns = len(unknowns)
+permutation_list = []
+for i in product(letters, repeat = n_unknowns):
+    permutation_list.append(i)
+
+output_list = []
+for i in permutation_list:
+    k = knowns[:]
+    i = [*i]
+    q = try_permutation(i,k)
+    q = "".join(q)
+    if d.check(q) and set(mandatory_letters).issubset(q):
+        output_list.append(q)
+
+print(output_list)
+
+
+
+
