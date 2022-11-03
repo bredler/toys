@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-# finishWordle
+# wordleWort
 # 
 # I'm not dumb. Wordle is dumb.
 # 
 # Author: Brendan Redler 2022
-# v 1.0
+# v 1.1
 
 import enchant
 from itertools import permutations
